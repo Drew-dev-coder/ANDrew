@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --prayer: #8e44ad;
+            --affirmation: #27ae60;
+            --quote: #3498db;
+            --truth: #e67e22;
+            --text: #ecf0f1;
+        }
+
+        body {
+            margin: 0;
+            padding: 20px;
+            background: var(--primary);
+            color: var(--text);
+            font-family: 'Merriweather', system-ui;
+            min-width: 320px;
+        }
+
+        .container {
+            display: grid;
+            gap: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .card {
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 5px solid;
+            background: rgba(255,255,255,0.05);
+        }
+
+        .prayer { border-color: var(--prayer); }
+        .affirmation { border-color: var(--affirmation); }
+        .quote { border-color: var(--quote); }
+        .truth { border-color: var(--truth); }
+
+        .header {
+            font-family: 'Open Sans', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.9em;
+        }
+
+        .content {
+            font-size: 1.1em;
+            line-height: 1.7;
+            position: relative;
+        }
+
+        .scripture-ref {
+            display: block;
+            margin-top: 10px;
+            font-style: italic;
+            color: #95a5a6;
+        }
+
+        .timestamp {
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 0.9em;
+            margin-top: 20px;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <div class="card prayer">
+            <div class="header">🙏 Daily Trading Prayer</div>
+            <div class="content" id="prayer"></div>
+            <div class="scripture-ref" id="prayerVerse"></div>
+        </div>
+
+        <div class="card affirmation">
+            <div class="header">💒 Faith Affirmation</div>
+            <div class="content" id="affirmation"></div>
+        </div>
+
+        <div class="card quote">
+            <div class="header">📘 Trading in the Zone</div>
+            <div class="content" id="douglasQuote"></div>
+        </div>
+
+        <div class="card truth">
+            <div class="header">📊 Market Axiom</div>
+            <div class="content" id="marketTruth"></div>
+        </div>
+
+        <div class="timestamp" id="updateTime"></div>
+    </div>
+
+    <script>
+        // Content Database (Condensed - Add 50 entries per category)
+        const content = {
+            prayers: [
+                {text: "Lord, help me trade in the spirit of excellence today, seeing each setup through Your lens of divine probability rather than worldly certainty.", verse: "Proverbs 16:9"},
+                {text: "Father, keep me from outcome attachment - may my peace come from obedience to Your principles, not P&L results.", verse: "Philippians 4:12-13"},
+                // Add 48 more prayer objects
+            ],
+            
+            affirmations: [
+                "I trade in Christ-centered confidence, knowing proper preparation meets divine opportunity",
+                "My edge comes from consistency to God's principles, not market outcomes",
+                // Add 48 more affirmations
+            ],
+            
+            douglasQuotes: [
+                "The truth is, you can’t predict the market, but you can prepare for probabilities - Mark Douglas",
+                "Successful trading requires thinking in probabilities, not certainties - Mark Douglas",
+                // Add 48 more quotes from the book
+            ],
+            
+            marketTruths: [
+                "5 Fundamental Truths: \n1. Anything can happen\n2. You don't need to know what's next\n3. Wins/losses are random short-term\n4. Edges are probabilities\n5. Price represents all knowledge",
+                "Market Reality: Your stop loss is the market's liquidity provider",
+                // Add 48 more truths
+            ]
+        };
+
+        // Date-based deterministic rotation
+        const getDailyIndex = (array) => {
+            const dateSeed = new Date().toISOString().slice(0,10).replace(/-/g,'');
+            return parseInt(dateSeed) % array.length;
+        };
+
+        const loadContent = () => {
+            // Prayer with Scripture
+            const prayer = content.prayers[getDailyIndex(content.prayers)];
+            document.getElementById('prayer').textContent = prayer.text;
+            document.getElementById('prayerVerse').textContent = prayer.verse;
+
+            // Affirmation
+            document.getElementById('affirmation').textContent = 
+                content.affirmations[getDailyIndex(content.affirmations)];
+
+            // Douglas Quote
+            document.getElementById('douglasQuote').textContent = 
+                content.douglasQuotes[getDailyIndex(content.douglasQuotes)];
+
+            // Market Truth
+            document.getElementById('marketTruth').textContent = 
+                content.marketTruths[getDailyIndex(content.marketTruths)];
+
+            // Timestamp
+            document.getElementById('updateTime').textContent = 
+                `Daily Reset: ${new Date().toLocaleDateString()} 05:00 AM Local`;
+        };
+
+        // Initial load
+        loadContent();
+
+        // Daily auto-refresh
+        const now = new Date();
+        const refreshTime = new Date(now);
+        refreshTime.setHours(5, 0, 0, 0); // 5 AM daily reset
+        if (now > refreshTime) refreshTime.setDate(refreshTime.getDate() + 1);
+        
+        setTimeout(() => {
+            setInterval(loadContent, 86400000); // 24h
+        }, refreshTime - now);
+    </script>
+</body>
+</html>
